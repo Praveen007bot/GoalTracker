@@ -46,50 +46,56 @@ const UserSignup = () => {
   };
 
   return (
-    <View className="flex items-center justify-center mt-32">
-      <Text className="font-bold text-4xl mb-10">Signup</Text>
+    <View className="flex items-center justify-center h-full bg-gray-900 px-6">
+      <Text className="font-bold text-4xl text-white mb-10">Signup</Text>
 
       {errorMessage ? (
         <Text className="text-red-500 mb-5">{errorMessage}</Text>
       ) : null}
 
       <TextInput
-        className="p-3 border-2 border-black w-[80%] rounded-lg"
+        className="p-4 bg-gray-800 text-white border-2 border-gray-700 w-full rounded-lg mb-5"
         placeholder="Username"
+        placeholderTextColor="#a1a1aa"
         value={formData.username}
         onChangeText={(value) => handleChange("username", value)}
       />
 
       <TextInput
-        className="p-3 border-2 border-black w-[80%] mt-5 rounded-lg"
+        className="p-4 bg-gray-800 text-white border-2 border-gray-700 w-full rounded-lg mb-5"
         placeholder="Email"
+        placeholderTextColor="#a1a1aa"
         value={formData.email}
         onChangeText={(value) => handleChange("email", value)}
       />
+
       <TextInput
-        className="p-3 border-2 border-black w-[80%] mt-5 rounded-lg"
+        className="p-4 bg-gray-800 text-white border-2 border-gray-700 w-full rounded-lg mb-5"
         placeholder="Password"
+        placeholderTextColor="#a1a1aa"
         secureTextEntry
         value={formData.password}
         onChangeText={(value) => handleChange("password", value)}
       />
 
       <Pressable
-        className="mt-10 w-[80%] bg-black py-4 rounded-lg"
+        className={`w-full bg-indigo-600 py-4 rounded-lg ${
+          loading ? "opacity-50" : ""
+        }`}
         onPress={handleSignup}
         disabled={loading} // Disable button while loading
       >
         {loading ? (
           <ActivityIndicator size="small" color="#fff" />
         ) : (
-          <Text className="text-white font-medium mx-auto">Log in</Text>
+          <Text className="text-white text-center font-semibold">Sign up</Text>
         )}
       </Pressable>
 
-      <Text className="mt-5">
+      <Text className="text-gray-400 mt-5">
         Already have an account?{" "}
         <Link href="/user/login" asChild>
-          <Text className="underline font-bold">Log in</Text>
+          <Text className="underline font-bold text-indigo-400">Log in</Text>
         </Link>
       </Text>
     </View>

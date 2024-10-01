@@ -1,1 +1,1 @@
-export const API_KEY = 'https://fe11-2401-4900-627b-a077-7d9e-5f3b-2f06-873d.ngrok-free.app'
+export const API_KEY = "https://thrush-firm-stingray.ngrok-free.app"
