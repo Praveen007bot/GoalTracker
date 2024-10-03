@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useCallback } from "react";
 import { View, Text, ScrollView, TouchableOpacity } from "react-native";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { API_KEY } from "@/constants/Api";
 import { useNavigation } from "@react-navigation/native";
-import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "expo-router";
-import { setGoals as reduxGoals } from "@/redux/goalSlice";
+import { useFocusEffect } from "@react-navigation/native";
 
 type Goal = {
   _id: string;
@@ -18,37 +17,9 @@ type Goal = {
 
 const Goals = () => {
   const router = useRouter();
-  const dispatch = useDispatch();
   const [localGoals, setLocalGoals] = useState<Goal[]>([]);
   const navigation = useNavigation();
 
-  // Fetch goals from API
-  useEffect(() => {
-    const fetchGoals = async () => {
-      try {
-        const token = await AsyncStorage.getItem("userToken");
-        const response = await axios.get(`${API_KEY}/api/v1/goal`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          withCredentials: true,
-        });
-        setLocalGoals(response.data.goals); // Assuming your API returns goals in a 'goals' key
-        dispatch(reduxGoals(response.data.goals));
-      } catch (error: any) {
-        console.error("Error fetching goals:", error.message);
-      }
-    };
-
-    fetchGoals();
-  }, []);
-
-  // Navigate to Goal Details Page
-  const openGoalDetails = (goalId: string) => {
-    router.push({ pathname: "/user/GoalDetails", params: { goalId } });
-  };
-
-  // Handle goal deletion from this component
   const handleDeleteGoal = async (goalId: string) => {
     try {
       const token = await AsyncStorage.getItem("userToken");
@@ -70,6 +41,32 @@ const Goals = () => {
       console.error("Error deleting goal:", error.message);
     }
   };
+
+  const openGoalDetails = (goalId: string) => {
+    router.push({ pathname: "/user/GoalDetails", params: { goalId } });
+  };
+
+  // Fetch goals from API
+  const fetchGoals = useCallback(async () => {
+    try {
+      const token = await AsyncStorage.getItem("userToken");
+      const response = await axios.get(`${API_KEY}/api/v1/goal`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        withCredentials: true,
+      });
+      setLocalGoals(response.data.goals); // Assuming your API returns goals in a 'goals' key
+    } catch (error: any) {
+      console.error("Error fetching goals:", error.message);
+    }
+  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchGoals();
+    }, [fetchGoals])
+  );
 
   return (
     <ScrollView className="flex-1 bg-gray-900 p-4">

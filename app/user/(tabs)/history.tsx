@@ -6,7 +6,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { API_KEY } from "@/constants/Api";
 import { router, useNavigation } from "expo-router";
-import { setGoals as reduxGoals } from "@/redux/goalSlice";
+import { useFocusEffect } from "@react-navigation/native";
 
 // Define Goal type
 type Goal = {
@@ -18,11 +18,9 @@ type Goal = {
 };
 
 const History = () => {
-  const dispatch = useDispatch();
-  const navigation = useNavigation();
   const [goals, setGoals] = useState<Goal[]>([]);
 
-  useEffect(() => {
+  useFocusEffect(() => {
     const fetchGoals = async () => {
       try {
         const token = await AsyncStorage.getItem("userToken");
@@ -32,15 +30,14 @@ const History = () => {
           },
           withCredentials: true,
         });
-        setGoals(response.data.goals); // Assuming your API returns goals in a 'goals' key
-        dispatch(reduxGoals(response.data.goals));
+        setGoals(response.data.goals); 5
       } catch (error: any) {
         console.error("Error fetching goals:", error.message);
       }
     };
 
     fetchGoals();
-  }, []);
+  });
 
   // Handle goal deletion
   const handleDeleteGoal = async (goalId: string) => {
